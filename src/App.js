@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Box ,Button,Text,InputGroup,Input,InputRightAddon,Select,Heading,Divider, border,InputLeftAddon,useDisclosure,Checkbox } from '@chakra-ui/react';
 import {AddIcon } from '@chakra-ui/icons';
 import {
@@ -24,6 +24,8 @@ import {
   ModalCloseButton
 } from '@chakra-ui/react'
 import { pipe } from 'framer-motion';
+import { useDispatch, useSelector } from 'react-redux';
+import { Editprods, Getproducts } from './redux/action';
 
 let initdata=[
   {
@@ -131,17 +133,33 @@ function App() {
   const [prods,setProds]=useState("pipe");
   const [mat,setMat]=useState("stainless_steel");
   const [title,setTitle]=useState("");
+  const dispatch=useDispatch();
+  const [singles,setSingles]=useState({});
+  const [search,setSearch]=useState("");
+  const [thing,setThing]=useState("");
+  const [material,setMaterial]=useState("");
 
   const toggleSubrows = (rowId) => {
     setExpandedRows((prev) => ({
       ...prev,
       [rowId]: !prev[rowId],
-    }))
+    }));
   }
+
+  console.log(singles);
+
+  const myprod=useSelector((state)=>{
+    // console.log(state.products);
+    return state.products
+  })
 
   function setsprod(item){
     console.log(item);
     setProds(item);
+  }
+
+  function Editproducts(item){
+    dispatch(Editprods(item));
   }
 
   function setmate(item)
@@ -154,6 +172,14 @@ function App() {
   {
     setTitle(value);
   }
+
+  function edititsprod(e){
+    setSingles({...singles,[e.target.name]:e.target.value});
+  }
+
+  useEffect(()=>{
+    dispatch(Getproducts(search,thing,material));
+  },[]);
   
 
 console.log(title);
@@ -221,29 +247,30 @@ console.log(title);
       </Modal>
     </>
    <Box>
-    <Box border={"2px solid red"} h={"300px"} bg={"#E0FFFF"}>
+    <Box  h={"300px"} bg={"#E0FFFF"}>
       <Box  h={"150px"} alignItems={"center"} alignContent={"center"} w={"40%"} display={"flex"}>
       <Button colorScheme='blue'marginLeft={"80px"} alignItems={"center"} justifyContent={"space-between"} w={"200px"} borderRadius={"30px"} onClick={onOpen} > <AddIcon/> Add Products</Button>
       <Box border={"none"} w={"250px"} display={"flex"} alignItems={"center"} justifyContent={"space-evenly"} h={"50px"} borderRadius={"25px"} marginLeft={"30px"} bg={"white"}><Text fontSize={"22px"} >280/400</Text>products</Box>
       </Box>
       <Box  marginLeft={"80px"} w={"50%"}>
       <InputGroup size='md' borderRadius={"15px"}>
-    <Input placeholder='search products...' bg={"white"}  />
-    <InputRightAddon bgColor={"blue"} color={"white"} w={"200px"} alignContent={"center"} justifyContent={"center"} >search</InputRightAddon>
+    <Input placeholder='search products...' bg={"white"} onChange={(e)=>setSearch(e.target.value)}  />
+    <InputRightAddon bgColor={"blue"} color={"white"} w={"200px"} alignContent={"center"} justifyContent={"center"} onClick={()=>{dispatch(Getproducts(search,thing,material))}} >search</InputRightAddon>
   </InputGroup>
       </Box>
       <Box  marginLeft={"80px"} marginTop={"35px"} display={"flex"} w={"50%"} justifyContent={"space-between"}>
-      <Select placeholder='Products' w={"250px"} bg={"white"}>
-  <option value='option1'>Option 1</option>
-  <option value='option2'>Option 2</option>
-  <option value='option3'>Option 3</option>
+      <Select placeholder='Products' w={"250px"} bg={"white"} onChange={(e)=>setThing(e.target.value)}>
+  <option value='pipe'>pipe</option>
+  <option value='gasket'>gasket</option>
+  <option value='tube'>tube</option>
+  <option value='valve'>valve</option>
 </Select>
-<Select placeholder='Materials' w={"250px"} bg={"white"}>
-  <option value='option1'>Option 1</option>
-  <option value='option2'>Option 2</option>
-  <option value='option3'>Option 3</option>
+<Select placeholder='Materials' w={"250px"} bg={"white"} onChange={(e)=>setMaterial(e.target.value)}>
+  <option value='stainless_steel'>stainless_steel</option>
+  <option value='aluminium'>aluminium</option>
+  <option value='titanium'>titanium</option>
 </Select>
-<Button bg={"white"}>filter</Button>
+<Button bg={"white"} onClick={()=>{dispatch(Getproducts(search,thing,material))}}>filter</Button>
       </Box>
     </Box>
    </Box>
@@ -275,12 +302,12 @@ console.log(title);
         <Td isNumeric>0.91444</Td>
       </Tr> */}
       {
-        initdata?.map((item,index)=>{
+        myprod?.map((item,index)=>{
           return(
             <>
             <Tr display={Object.keys(expandedRows).includes(item._id)&&expandedRows[item._id]==true ?"none":"-moz-initial"}>
         <Td>{item.title}</Td>
-        <Td display={"flex"} gap={"15px"} h={"100px"} alignItems={"center"}><Text color={"blue"} onClick={() => toggleSubrows(item._id)}>Quick Edit</Text> | <Text color={"blue"}>Add details</Text></Td>
+        <Td display={"flex"} gap={"15px"} h={"100px"} alignItems={"center"}><Text color={"blue"} onClick={() =>{ toggleSubrows(item._id,item);setSingles(item)}}>Quick Edit</Text> | <Text color={"blue"}>Add details</Text></Td>
         <Td >
          material: {item.material}<br/>
          unit length: {item.length}<br/>
@@ -294,7 +321,7 @@ console.log(title);
   Quick Edit
   </Heading>
   <Box  w={"800px"} h={"50px"} position={"absolute"} display={"flex"} justifyContent={"space-between"}>
-        <Box  alignContent={"center"} > Title &nbsp;&nbsp; {item.title}</Box>
+        <Box  alignContent={"center"} > Title &nbsp;&nbsp; {singles.title}</Box>
         <Box  display={"flex"} justifyContent={"space-between"} alignItems={"center"}> Price &nbsp;&nbsp;   <InputGroup size='sm' >
     <InputLeftAddon borderLeftRadius={"20px"}>INR</InputLeftAddon>
     <Input />
@@ -307,30 +334,30 @@ console.log(title);
    
         
         <Box  display={"flex"} justifyContent={"space-between"} alignItems={"center"}> Material &nbsp;&nbsp;   
-    <Input borderRadius={"20px"} value={item.material} />
+    <Input borderRadius={"20px"} name='material' value={singles.material} onChange={edititsprod}  />
   </Box>
   <Box  display={"flex"} justifyContent={"space-between"} alignItems={"center"}> Shape &nbsp;&nbsp;   
-    <Input borderRadius={"20px"} value={item.shape} />
+    <Input borderRadius={"20px"} value={singles.shape} name='shape' onChange={edititsprod} />
   </Box>
   <Box  display={"flex"} justifyContent={"space-between"} alignItems={"center"}> Length &nbsp;&nbsp;   
-    <Input borderRadius={"20px"} value={item.length} />
+    <Input borderRadius={"20px"} value={singles.length} name='length' onChange={edititsprod} />
   </Box>
     </Box>
     <Box h={"40%"} display={"flex"} justifyContent={"space-evenly"}>
    
         
         <Box  display={"flex"} justifyContent={"space-between"} alignItems={"center"}> Thickness &nbsp;&nbsp;   
-    <Input borderRadius={"20px"} value={item.thickness} />
+    <Input borderRadius={"20px"} value={singles.thickness} name='thickness' onChange={edititsprod}  />
   </Box>
   <Box  display={"flex"} justifyContent={"space-between"} alignItems={"center"}> Surface finish &nbsp;&nbsp;   
-    <Input borderRadius={"20px"} value={item.surface} />
+    <Input borderRadius={"20px"} value={singles.surface} name='surface' onChange={edititsprod}/>
   </Box>
   <Box  display={"flex"} justifyContent={"space-between"} alignItems={"center"}> Outside Dia. &nbsp;&nbsp;   
-    <Input borderRadius={"20px"} value={item.outdia} />
+    <Input borderRadius={"20px"} value={singles.outdia} name='outdia' onChange={edititsprod} />
   </Box>
     </Box>
     <Box position={"absolute"}  w={"300px"} h={"40px"} display={"flex"} justifyContent={"space-between"} marginLeft={"25px"}>
-    <Button colorScheme='blue' borderRadius={"18px"} onClick={() => toggleSubrows(item._id)}>Update</Button>
+    <Button colorScheme='blue' borderRadius={"18px"} onClick={() =>{ toggleSubrows(item._id);Editproducts(singles);}} name='lily'>Update</Button>
     <Button colorScheme='black' variant='outline' borderRadius={"18px"}>
     cancel
   </Button>
