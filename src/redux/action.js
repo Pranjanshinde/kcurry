@@ -60,3 +60,20 @@ export const Editprods = (item) => (dispatch)=>{
      
     })
 }
+
+export const postProduct = (item) => (dispatch) =>{
+
+  axios.post(`http://localhost:8080/prod`,item)
+    .then(function (response) {
+      // handle success
+      console.log(response.data);
+    //  alert(response.data.msg);
+     window.location.reload();
+    
+    })
+    .catch(function (error) {
+      // handle error
+      console.log(error);
+     
+    })
+}

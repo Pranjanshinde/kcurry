@@ -25,7 +25,7 @@ import {
 } from '@chakra-ui/react'
 import { pipe } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
-import { Editprods, Getproducts } from './redux/action';
+import { Editprods, Getproducts, postProduct } from './redux/action';
 
 let initdata=[
   {
@@ -40,32 +40,6 @@ let initdata=[
     surface: "single",
     outdia: "5''",
     __v: 0
-},
-{
-  _id: "66ade93ed973baf70375f934",
-  title: "Aluminium 45 pipe",
-  price: "400/kg",
-  product: "pipe",
-  material: "Aluminium",
-  shape: "round",
-  length: "2m",
-  thickness: "1mm to 3mm",
-  surface: "single",
-  outdia: "5''",
-  __v: 0
-},
-{
-  _id: "66ade93ed973baf70375f935",
-  title: "Aluminium 45 pipe",
-  price: "400/kg",
-  product: "pipe",
-  material: "Aluminium",
-  shape: "round",
-  length: "2m",
-  thickness: "1mm to 3mm",
-  surface: "single",
-  outdia: "5''",
-  __v: 0
 }
 ]
 
@@ -146,7 +120,22 @@ function App() {
     }));
   }
 
-  console.log(singles);
+  console.log(prods,mat,title);
+
+  function postprod(){
+    const data={
+      title: title,
+      price: "400/kg",
+      product: prods,
+      material: mat,
+      shape: "",
+      length: "",
+      thickness: "",
+      surface: "",
+      outdia: "",
+    }
+    dispatch(postProduct(data));
+  }
 
   const myprod=useSelector((state)=>{
     // console.log(state.products);
@@ -238,7 +227,7 @@ console.log(title);
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme='blue' mr={3} onClick={onClose}>
+            <Button colorScheme='blue' mr={3} onClick={()=>{postprod();onClose();}} >
               Submit
             </Button>
             {/* <Button variant='ghost'>Secondary Action</Button> */}
@@ -358,7 +347,7 @@ console.log(title);
     </Box>
     <Box position={"absolute"}  w={"300px"} h={"40px"} display={"flex"} justifyContent={"space-between"} marginLeft={"25px"}>
     <Button colorScheme='blue' borderRadius={"18px"} onClick={() =>{ toggleSubrows(item._id);Editproducts(singles);}} name='lily'>Update</Button>
-    <Button colorScheme='black' variant='outline' borderRadius={"18px"}>
+    <Button colorScheme='black' variant='outline' borderRadius={"18px"} onClick={()=>{toggleSubrows(item._id,item)}}>
     cancel
   </Button>
     </Box>
