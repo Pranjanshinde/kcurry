@@ -20,14 +20,14 @@ function Getsingle(payload)
 }
 
 export const Getproducts = (search,thing,material) =>(dispatch)=>{
-    let url=`http://localhost:8080/prod`;
+    let url=`https://kcurry.onrender.com/prod`;
     if(search!="")
     {
-        url=`http://localhost:8080/prod?text=${search}`
+        url=`https://kcurry.onrender.com/prod?text=${search}`
     }
     if(thing!="" || material!="")
     {
-        url=`http://localhost:8080/prod?product=${thing}&material=${material}`
+        url=`https://kcurry.onrender.com/prod?product=${thing}&material=${material}`
     }
     axios.get(url)
   .then(function (response) {
@@ -45,7 +45,7 @@ export const Getproducts = (search,thing,material) =>(dispatch)=>{
 
 export const Editprods = (item) => (dispatch)=>{
     console.log(item,2);
-    axios.patch(`http://localhost:8080/prod/${item._id}`,item)
+    axios.patch(`https://kcurry.onrender.com/prod/${item._id}`,item)
     .then(function (response) {
       // handle success
       console.log(response.data);
@@ -63,7 +63,7 @@ export const Editprods = (item) => (dispatch)=>{
 
 export const postProduct = (item) => (dispatch) =>{
 
-  axios.post(`http://localhost:8080/prod`,item)
+  axios.post(`https://kcurry.onrender.com/prod`,item)
     .then(function (response) {
       // handle success
       console.log(response.data);
