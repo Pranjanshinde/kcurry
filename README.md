@@ -15,7 +15,7 @@
 
 
 ## Snapshots :camera:
-![alt text]([<Screenshot (191).png>](https://64.media.tumblr.com/321a5ede4c8b355cf7939e2135ca311c/60e97825779d32d4-54/s640x960/0321e1c60b236e32dc5d4efdda0da4eb24c1fa17.pnj))
+https://64.media.tumblr.com/321a5ede4c8b355cf7939e2135ca311c/60e97825779d32d4-54/s640x960/0321e1c60b236e32dc5d4efdda0da4eb24c1fa17.pnj
 
 
 
