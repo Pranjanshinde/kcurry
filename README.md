@@ -1,6 +1,7 @@
 # kcurry
 Demo 🎥
-Deployed Link:- Enjoy the Experience
+Deployed Link:- https://ecom-lilac-three.vercel.app
+
 Tech Stack 💻
 React
 Redux
